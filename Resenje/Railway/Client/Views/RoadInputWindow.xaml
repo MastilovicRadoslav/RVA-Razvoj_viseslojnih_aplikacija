@@ -1,0 +1,34 @@
+﻿<Window x:Class="Client.Views.RoadInputWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client.Views"
+        mc:Ignorable="d"
+        Title="Road input" Height="379" Width="767" ResizeMode="NoResize" Icon="/Client;component/Images/trainicon.png">
+    <Grid Margin="0,0,0,-1">
+        <Grid.Background>
+            <ImageBrush ImageSource="/Client;component/Images/background.png" Stretch="UniformToFill" Opacity="0.5"/>
+        </Grid.Background>
+        <!-- Postojeći sadržaj -->
+        <Label Content="Name (3 letters at least)" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top"/>
+        <Label Content="Label (3 letters at least)" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top"/>
+        <Label Content="All stations" HorizontalAlignment="Left" Margin="140,101,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.515,0.923"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="236,26,0,0" TextWrapping="Wrap" Text="{Binding NewRoad.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="513"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="236,57,0,0" TextWrapping="Wrap" Text="{Binding NewRoad.Label, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="513"/>
+        <DataGrid  x:Name="StationsTable" ItemsSource="{Binding AllStations, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" HorizontalAlignment="Left" Height="155" Margin="10,132,0,0" VerticalAlignment="Top" Width="330">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Save" HorizontalAlignment="Left" Background="White" Margin="633,312,0,0" VerticalAlignment="Top" Width="89" Command="{Binding SaveRoadCommand}" CommandParameter="{Binding NewRoad}" Height="28"/>
+        <DataGrid  x:Name="StationOnRoadTable" ItemsSource="{Binding SelectedStations, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" IsReadOnly="True" Height="155" Margin="419,132,0,0" VerticalAlignment="Top" Width="330"  CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Add" HorizontalAlignment="Left" Margin="345,148,0,0" Background="Orange" VerticalAlignment="Top" Width="69" Height="24" Command="{Binding AttachStationsToRoadCommand}" CommandParameter="{Binding ElementName=StationsTable, Path=SelectedItem}"/>
+        <Label Content="Stations on this road" HorizontalAlignment="Left" Margin="517,101,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.515,0.923"/>
+        <Button Content="Remove" HorizontalAlignment="Left" Margin="345,249,0,0" Background="LightPink" VerticalAlignment="Top" Width="69" Height="24" Command="{Binding RemoveAttachedStationsCommand}" CommandParameter="{Binding ElementName=StationOnRoadTable, Path=SelectedItem}"/>
+    </Grid>
+</Window>

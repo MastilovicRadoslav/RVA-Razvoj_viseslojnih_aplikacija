@@ -1,0 +1,215 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Railway Management" Height="460" Width="760" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" Icon="/Client;component/Images/trainicon.png" Background="#FFEAEAEA" >
+
+    <Window.Resources>
+
+        <SolidColorBrush x:Key="BlackBrush" Color="Black"/>
+
+        <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
+
+        <SolidColorBrush x:Key="GreenBrush" Color="Orange" />
+
+        <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
+
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
+
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid>
+                            <Border 
+                                Name="Border"
+                                Margin="0,0,-4,0" 
+                                Background="{StaticResource BlackBrush}"
+                                BorderBrush="{StaticResource  SolidBorderBrush}" 
+                                BorderThickness="1,1,1,1" 
+                                CornerRadius="2,12,0,0" >
+                                <ContentPresenter x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    ContentSource="Header"
+                                    Margin="12,2,12,2"
+                                    RecognizesAccessKey="True"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource GreenBrush}" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <TabControl TabStripPlacement="Left"  Background="#FFFBFBFB">
+        <TabItem Header="User profile" Height="60" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <Border BorderBrush="Black" BorderThickness="1" Margin="100,50,100,50" Padding="10">
+                    <Grid>
+                        <Grid.Background>
+                            <ImageBrush ImageSource="/Client;component/Images/background.png" Opacity="0.5"/>
+                        </Grid.Background>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Username" HorizontalAlignment="Left" FontSize="20" Grid.Row="0" Grid.Column="0"/>
+                        <TextBox HorizontalAlignment="Left" Height="34" TextWrapping="Wrap" Text="{Binding User.UserName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120" FontSize="20" IsEnabled="False" Grid.Row="0" Grid.Column="1"/>
+
+                        <Label Content="Name" HorizontalAlignment="Left" FontSize="20" Grid.Row="1" Grid.Column="0"/>
+                        <TextBox HorizontalAlignment="Left" Height="34" TextWrapping="Wrap" Text="{Binding User.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120" FontSize="20" Grid.Row="1" Grid.Column="1"/>
+
+                        <Label Content="Last name" HorizontalAlignment="Left" FontSize="20" Grid.Row="2" Grid.Column="0"/>
+                        <TextBox HorizontalAlignment="Left" Height="34" TextWrapping="Wrap" Text="{Binding User.LastName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120" FontSize="20" Grid.Row="2" Grid.Column="1"/>
+
+                        <Button Content="Update profile" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" Background="Orange" BorderBrush="Black" Command="{Binding UpdateProfileCommand}" Height="37" Grid.Row="5" Grid.Column="0" Margin="74,45.6,0,-80.2"/>
+                        <Button Content="Log out" HorizontalAlignment="Left" VerticalAlignment="Top" Width="84" BorderBrush="Black" Command="{Binding LogoutCommand}" Background="Orange" Height="37" Grid.Row="5" Grid.Column="1" Margin="0,45.6,0,-79.4"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Roads service" Height="60" Foreground="White" Background="Transparent" HorizontalAlignment="Right" Width="104">
+            <Grid Margin="0,5,0,-7">
+                <DataGrid  x:Name="RoadsTable" ItemsSource="{Binding Roads, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsReadOnly="True" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Canvas.Top="10" Canvas.Left="10" Margin="10,2,114,141">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Label" Binding="{Binding Label}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTemplateColumn Header="Stations" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Stations}" DisplayMemberPath="Name"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Undo" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Canvas.Left="465" Canvas.Top="301" Margin="541,261,0,0" Command="{Binding UndoCommand}"/>
+                <Button Content="Redo" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Canvas.Left="465" Canvas.Top="256" Margin="541,220,0,0" Command="{Binding RedoCommand}"/>
+                <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top"  Width="87" BorderBrush="Black" Canvas.Left="465" Canvas.Top="15" Margin="541,4,0,0" Command="{Binding OpenAddRoadDialogCommand}"/>
+                <Button Content="Change" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Canvas.Left="465" Canvas.Top="67" Margin="541,44,0,0" Command="{Binding OpenChangeRoadDialogCommand}" CommandParameter="{Binding ElementName=RoadsTable, Path=SelectedItem}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteRoadCommand}" CommandParameter="{Binding ElementName=RoadsTable, Path=SelectedItem}" Canvas.Left="465" Canvas.Top="113" RenderTransformOrigin="0.491,-1.067" Margin="541,86,0,0"/>
+                <Button Content="Clone" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Canvas.Left="465" Canvas.Top="208" Margin="541,172,0,0" Command="{Binding CloneRoadCommand}" CommandParameter="{Binding ElementName=RoadsTable, Path=SelectedItem}"/>
+                <Button Content="Refresh" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding RefreshRoadsCommand}" CommandParameter="{Binding RoadSearch}" Canvas.Left="465" Canvas.Top="160" Margin="541,131,0,0"/>
+                <Button Content="Search" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="541,343,0,0" Command="{Binding SearchRoadsCommand}" CommandParameter="{Binding RoadSearch}"/>
+                <Button Content="Clear search" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Margin="541,379,0,0" Command="{Binding ClearSearchCommand}"/>
+                <Label Content="Name" HorizontalAlignment="Left" Margin="10,343,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="96,346,0,0" TextWrapping="Wrap" Text="{Binding RoadSearch.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="363"/>
+                <Label Content="Label" HorizontalAlignment="Left" Margin="10,378,0,0" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="96,378,0,0" TextWrapping="Wrap" Text="{Binding RoadSearch.Label, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="363"/>
+                <Label Content="Search roads" HorizontalAlignment="Left" Margin="237,302,0,0" VerticalAlignment="Top"/>
+                <!-- <Label Content="Spoji sa:" HorizontalAlignment="Left" Margin="10,420,0,0" VerticalAlignment="Top"/>
+                <ComboBox ItemsSource="{Binding AllRoads}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedRoadForMerge}" HorizontalAlignment="Left" Margin="96,420,0,0" VerticalAlignment="Top" Width="363"/>
+                <Button Content="Merge Roads" HorizontalAlignment="Left" VerticalAlignment="Top" Width="87" Background="Orange" BorderBrush="Black" Margin="470,420,0,0" Command="{Binding MergeRoadsCommand}"/>
+ -->
+            </Grid>
+        </TabItem>
+        <TabItem Header="Stations service" Height="60" Foreground="White">
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="StationsTable" ItemsSource="{Binding Stations, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="All" Margin="10,0,116,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="2*"/>
+                        <DataGridTextColumn Header="Tracks #" Binding="{Binding TrackNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Place" Binding="{Binding Place.Name}" Width="2*"/>
+                        <DataGridTemplateColumn Header="Tracks list" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ItemsControl ItemsSource="{Binding Tracks}" DisplayMemberPath="Name"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" Margin="541,10,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenAddStationDialogCommand}"/>
+                <Button Content="Change" HorizontalAlignment="Left" Margin="541,70,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenChangeStationDialogCommand}" CommandParameter="{Binding ElementName=StationsTable, Path=SelectedItem}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" Margin="541,130,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteStationCommand}" CommandParameter="{Binding ElementName=StationsTable, Path=SelectedItem}"/>
+                <Button Content="Refresh" HorizontalAlignment="Left" Margin="541,190,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding RefreshStationsCommand}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Tracks service" Height="60" Foreground="White">
+            <Grid Margin="0,5,0,-1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="136*"/>
+                </Grid.RowDefinitions>
+                <DataGrid  x:Name="TracksTable" ItemsSource="{Binding Tracks, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" CanUserResizeRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="None" Margin="10,0,116,10" Grid.RowSpan="2">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Label" Binding="{Binding Label}" Width="*"/>
+                        <DataGridTextColumn Header="Entrance" Binding="{Binding Entrance}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" Margin="541,7,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenAddTrackDialogCommand}"/>
+                <Button Content="Change" HorizontalAlignment="Left" Margin="541,67,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenChangeTrackDialogCommand}" CommandParameter="{Binding ElementName=TracksTable, Path=SelectedItem}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" Margin="541,45,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeleteTrackCommand}" CommandParameter="{Binding ElementName=TracksTable, Path=SelectedItem}" Grid.Row="1"/>
+                <Button Content="Refresh" HorizontalAlignment="Left" Margin="541,105,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding RefreshTracksCommand}" Grid.Row="1"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Places service" Height="60" Foreground="White">
+            <Grid Margin="0,5,0,-1">
+                <DataGrid  x:Name="PlacesTable" ItemsSource="{Binding Places, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" CanUserResizeRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="None" Margin="10,0,116,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Country" Binding="{Binding Country.Name}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" Margin="541,4,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenAddPlaceDialogCommand}"/>
+                <Button Content="Change" HorizontalAlignment="Left" Margin="541,64,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenChangePlaceDialogCommand}" CommandParameter="{Binding ElementName=PlacesTable, Path=SelectedItem}"/>
+                <Button Content="Delete" HorizontalAlignment="Left" Margin="541,124,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding DeletePlaceCommand}" CommandParameter="{Binding ElementName=PlacesTable, Path=SelectedItem}"/>
+                <Button Content="Refresh" HorizontalAlignment="Left" Margin="541,184,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding RefreshPlacesCommand}"/>
+            </Grid>
+        </TabItem>
+        <TabItem IsEnabled="{Binding User.IsAdmin}" Header="Users service" Height="60" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid x:Name="UsersTable" ItemsSource="{Binding Users, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" CanUserResizeRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="None" Margin="10,0,116,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ID}" Width="*"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="2*"/>
+                        <DataGridTextColumn Header="Last name" Binding="{Binding LastName}" Width="2*"/>
+                        <DataGridTextColumn Header="User name" Binding="{Binding UserName}" Width="2*"/>
+                        <DataGridCheckBoxColumn Header="Admin" Binding="{Binding IsAdmin}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button Content="Add" HorizontalAlignment="Left" Margin="541,5,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding OpenAddUserDialogCommand}" CommandParameter="{Binding User}"/>
+                <Button Content="Refresh" HorizontalAlignment="Left" Margin="541,57,0,0" VerticalAlignment="Top" Width="87" Background="#FFDADADA" BorderBrush="Black" Command="{Binding RefreshUsersCommand}" Height="26"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="System events" Height="60" Foreground="White" >
+            <Grid Margin="0,5,0,-1">
+                <DataGrid x:Name="EventsTable" ItemsSource="{Binding Events, UpdateSourceTrigger=PropertyChanged}"  IsReadOnly="True" CanUserResizeRows="False" SelectionMode="Single" AutoGenerateColumns="False" GridLinesVisibility="Horizontal" HorizontalScrollBarVisibility="Auto" Margin="10,0,10,10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Timestamp" Binding="{Binding EventTime}" Width="2*"/>
+                        <DataGridTextColumn Header="Type" Binding="{Binding LogType}" Width="*"/>
+                        <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="5*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </TabItem>
+
+    </TabControl>
+</Window>
